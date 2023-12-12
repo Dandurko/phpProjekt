@@ -261,6 +261,20 @@ class DB
         return $stmt->execute();
     }
 
+    
+
+
+    public function getDoctors(): array
+    {
+        $sql = "SELECT doctors.first_name, doctors.second_name, doctors.phone_number, departments.name FROM `doctors` INNER JOIN departments ON departments.id = doctors.departments_id;";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $result;
+    }
+    
+
+
     public function updateCategory(string $articleId, string $category): bool
     {
         // Use a prepared statement to prevent SQL injection
@@ -277,21 +291,6 @@ class DB
         // Execute the statement
         return $stmt->execute();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

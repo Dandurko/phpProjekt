@@ -42,7 +42,7 @@ include 'web_parts/header.html';
 include 'web_parts/menu.html';
 include 'web_parts/home.html';
 include 'web_parts/about.html';
-include 'web_parts/team.html';
+include 'web_parts/team.php';
 include 'web_parts/news.php';
 include 'web_parts/appointment.php';
 include 'web_parts/footer.html';
