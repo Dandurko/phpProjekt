@@ -45,7 +45,7 @@ http://www.tooplate.com/view/2098-health
 
      use PO\Lib\DB;
 
-     $db = new DB("localhost", 3306, "root", "", "phpschema");
+     $db = new DB("localhost", 3306, "root", "", "phpschemafinal");
      $articles = $db->getArticleById($_GET['id']);
      $recentArticles = $db->getLastTwoArticles($_GET['id']);
      ?>

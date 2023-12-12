@@ -11,7 +11,7 @@ class DB
     private $port = 3306;
     private $username = "root";
     private $password = "";
-    private $dbName = "phpschema";
+    private $dbName = "phpschemafinal";
 
     private \PDO $connection;
 
@@ -21,25 +21,24 @@ class DB
         string $username = "",
         string $password = "",
         string $dbName = ""
-    )
-    {
-        if(!empty($host)) {
+    ) {
+        if (!empty($host)) {
             $this->host = $host;
         }
 
-        if(!empty($port)) {
+        if (!empty($port)) {
             $this->port = $port;
         }
 
-        if(!empty($username)) {
+        if (!empty($username)) {
             $this->username = $username;
         }
 
-        if(!empty($password)) {
+        if (!empty($password)) {
             $this->password = $password;
         }
 
-        if(!empty($dbName)) {
+        if (!empty($dbName)) {
             $this->dbName = $dbName;
         }
 
@@ -51,14 +50,14 @@ class DB
             );
             // set the PDO error mode to exception
             $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch(\PDOException $e) {
+        } catch (\PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
         }
     }
 
     public function getArticles(): array
     {
-        $sql = "SELECT * FROM articles";
+        $sql = "SELECT articles.id, articles.title, articles.image_url, articles.date, articles.users_id, articles.articles_content_id, articles.categories_id, articles_content.content, categories.category_name FROM articles INNER JOIN articles_content ON articles.articles_content_id = articles_content.id INNER JOIN categories ON articles.categories_id = categories.id";
         $query = $this->connection->query($sql);
         $data = $query->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -73,11 +72,21 @@ class DB
 
         return $data;
     }
-    public function getARticleCategories(): array
+    public function getArticleCategories(): array
     {
         $sql = "SELECT * FROM categories";
         $query = $this->connection->query($sql);
         $data = $query->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $data;
+    }
+    public function getArticleCategory(int $id): array
+    {
+        $sql = "SELECT * FROM categories  WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         return $data;
     }
@@ -95,6 +104,7 @@ class DB
     public function getArticleById(int $id): array
     {
         $sql = "SELECT * FROM articles WHERE id = :id";
+
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
@@ -102,6 +112,30 @@ class DB
 
         return $data;
     }
+
+    public function getArticleWithContentById(int $id): array
+    {
+        $sql = "SELECT articles.id, articles.title, articles.image_url, articles.date, articles.users_id, articles.articles_content_id, articles.categories_id, articles_content.content, categories.category_name FROM articles INNER JOIN articles_content ON articles.articles_content_id = articles_content.id INNER JOIN categories ON articles.categories_id = categories.id WHERE articles.id = :id";
+
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $data;
+    }
+    public function getContentByArticleId(int $id): array
+    {
+        $sql = "SELECT * FROM articles_content WHERE id = :id";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $data ? [$data] : [];
+    }
+
     public function logIn(string $username, string $password): ?int
     {
         // Získanie uloženého hashovaného hesla z databázy
@@ -109,43 +143,47 @@ class DB
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':username', $username, \PDO::PARAM_STR);
         $stmt->execute();
-        
+
         $userData = $stmt->fetch(\PDO::FETCH_ASSOC);
-    
+
         if ($userData) {
             // Overenie hesla pomocou password_verify
             if (password_verify($password, $userData['password'])) {
                 return $userData['id'];
             }
         }
-    
+
         return null; // V prípade neúspešného prihlásenia
     }
-    
-    public function insertArticle(string $title, string $text, string $image_url, int $userId): bool
+
+    public function insertArticle(string $title, string $content, string $image_url, string $category, int $userId): bool
     {
         // Vložení textu článku do tabulky articles_content
-        $sqlContent = "INSERT INTO articles_content (content,date) VALUES (:text,NOW())";
+        $sqlContent = "INSERT INTO articles_content (content) VALUES (:content)";
         $stmtContent = $this->connection->prepare($sqlContent);
-        $stmtContent->bindParam(':text', $text, \PDO::PARAM_STR);
+        $stmtContent->bindParam(':content', $content, \PDO::PARAM_STR);
         $stmtContent->execute();
-    
+
         // Získání ID vloženého obsahu
         $contentId = $this->connection->lastInsertId();
-    
+
         // Vložení článku do tabulky articles s odkazem na articles_content_id
-        $sqlArticle = "INSERT INTO articles (title, image_url, date, users_id, articles_content_id) VALUES (:title, :image_url, NOW(), :userId, :contentId)";
+        $sqlArticle = "INSERT INTO articles (title, image_url, date, users_id, articles_content_id,categories_id) VALUES (:title, :image_url, NOW(), :userId, :contentId,:category)";
         $stmtArticle = $this->connection->prepare($sqlArticle);
         $stmtArticle->bindParam(':title', $title, \PDO::PARAM_STR);
+        $stmtArticle->bindParam(':category', $category, \PDO::PARAM_STR);
         $stmtArticle->bindParam(':image_url', $image_url, \PDO::PARAM_STR);
         $stmtArticle->bindParam(':userId', $userId, \PDO::PARAM_INT);
         $stmtArticle->bindParam(':contentId', $contentId, \PDO::PARAM_INT);
-    
-        return $stmtArticle->execute();
+        $stmtArticle->execute();
+
+
+        return true;  // Nebo můžete vrátit něco jiného podle potřeby
     }
-    
-    
-    public function makeAppointment(string $first_name,string $last_name, string $date,int $phone_number,string $message,int $departments_id): bool
+
+
+
+    public function makeAppointment(string $first_name, string $last_name, string $date, int $phone_number, string $message, int $departments_id): bool
     {
         $sql = "INSERT INTO appointments(first_name, last_name,date,phone_number,message,departments_id) VALUE ('" . $first_name . "', '" . $last_name . "', '" . $date . "' ,'" . $phone_number . "','" . $message . "','" . $departments_id . "' )";
         $stmt = $this->connection->prepare($sql);
@@ -163,7 +201,7 @@ class DB
         $stmt->bindParam(':userID', $id, \PDO::PARAM_INT);
         $stmt->execute();
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    
+
         return $data;
     }
 
@@ -178,18 +216,26 @@ class DB
         $stmt->bindParam(':excludeId', $id, \PDO::PARAM_INT);
         $stmt->execute();
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    
+
         return $data;
     }
-    
-    
-    public function updateArticle(string $title,string $text, string $image_url,int $articleId): bool
+
+
+
+
+
+
+
+
+
+
+
+
+    public function updateArticle(string $title, string $image_url, int $articleId): bool
     {
-  $sql = "UPDATE articles 
+        $sql = "UPDATE articles 
         SET title = '" . $title . "', 
-            text = '" . $text . "', 
-            image_url = '" . $image_url . "', 
-            date = now()
+            image_url = '" . $image_url . "'
         WHERE id = " . $articleId . ";";
 
 
@@ -197,20 +243,90 @@ class DB
         return $stmt->execute();
     }
 
-    public function deleteArticle(int $id): bool
+
+    public function updateContent(string $content, string $contentId): bool
     {
-        $sql = "DELETE FROM articles WHERE id = ".$id;
+        // Use a prepared statement to prevent SQL injection
+        $sql = "UPDATE articles_content 
+           SET content = :content
+           WHERE id = :contentId";
+
         $stmt = $this->connection->prepare($sql);
-      
+
+        // Bind parameters
+        $stmt->bindParam(':content', $content, \PDO::PARAM_STR);
+        $stmt->bindParam(':contentId', $contentId, \PDO::PARAM_INT);
+
+        // Execute the statement
         return $stmt->execute();
     }
-    
+
+    public function updateCategory(string $articleId, string $category): bool
+    {
+        // Use a prepared statement to prevent SQL injection
+        $sql = "UPDATE articles 
+                SET categories_id = :category
+                WHERE id = :articleId";
+
+        $stmt = $this->connection->prepare($sql);
+
+        // Bind parameters
+        $stmt->bindParam(':category', $category, \PDO::PARAM_STR);
+        $stmt->bindParam(':articleId', $articleId, \PDO::PARAM_INT);
+
+        // Execute the statement
+        return $stmt->execute();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function deleteArticle(int $id): bool
+    {
+        $sql = "DELETE FROM articles WHERE id = " . $id;
+        $stmt = $this->connection->prepare($sql);
+
+        return $stmt->execute();
+    }
+
+
+    public function deleteContent(int $id): bool
+    {
+        $sql = "DELETE FROM articles_content WHERE id = " . $id;
+        $stmt = $this->connection->prepare($sql);
+
+        return $stmt->execute();
+    }
+
+
+
+
+
+
+
+
+
     public function register(string $username, string $password): bool
-    {  
+    {
         $options = [
             'cost' => 12, // Nastavenie náročnosti hashovania, môžete prispôsobiť podľa potreby
         ];
-        
+
         $existingUser = $this->getUserByUsername($username);
 
         if ($existingUser) {
@@ -223,19 +339,14 @@ class DB
         return $stmt->execute();
     }
 
-private function getUserByUsername(string $username)
-{
-$sql = "SELECT * FROM users WHERE username = :username";
-$stmt = $this->connection->prepare($sql);
-$stmt->bindParam(':username', $username, \PDO::PARAM_STR);
-$stmt->execute();
-$result = $stmt->fetch(\PDO::FETCH_ASSOC);
+    private function getUserByUsername(string $username)
+    {
+        $sql = "SELECT * FROM users WHERE username = :username";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':username', $username, \PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-return $result;
-
+        return $result;
+    }
 }
-
-    
-}
-
-?>

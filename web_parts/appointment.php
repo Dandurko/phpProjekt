@@ -39,11 +39,11 @@
 
                                         use PO\Lib\DB;
 
-                                        $db = new DB("localhost", 3306, "root", "", "phpschema");
+                                        $db = new DB("localhost", 3306, "root", "", "phpschemafinal");
                                         $departments = $db->getDepartments();
                                         ?>
                                         <?php foreach ($departments as $department) : ?>
-                                             <option  value="<?= $department['id'] ?>" ><?=  $department['nazov']?></option>
+                                             <option  value="<?= $department['id'] ?>" ><?=  $department['name']?></option>
                                      
                                         <?php endforeach; ?>
                                    </select>

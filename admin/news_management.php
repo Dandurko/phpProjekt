@@ -41,7 +41,7 @@ http://www.tooplate.com/view/2098-health
 
 <body>
      <div id="logout">
-          <a  href="logout.php">Logout</a>
+          <a href="logout.php">Logout</a>
      </div>
      <?php
 
@@ -50,10 +50,11 @@ http://www.tooplate.com/view/2098-health
 
      use PO\Lib\DB;
 
-     $db = new DB("localhost", 3306, "root", "", "phpschema");
+     $db = new DB("localhost", 3306, "root", "", "phpschemafinal");
      $userId = $_SESSION['userId'];
      $articles = $db->getArticlesById($userId);
-     $categories = $db->getARticleCategories();
+     $categories = $db->getArticleCategories();
+
      ?>
      <section id="news" data-stellar-background-ratio="2.5">
 
@@ -72,17 +73,31 @@ http://www.tooplate.com/view/2098-health
                               <input type="text" name="title" id="">
                               <input type="text" name="text" id="">
                               <input type="text" name="image_url" id="">
+                              <select name="category" class="">
+                                   <?php foreach ($categories as $category) : ?>
+                                        <option value="<?= $category['id'] ?>"><?= $category['category_name'] ?></option>
+                                   <?php endforeach; ?>
+                              </select>
+
                               <input type="submit" name="submit" value="Vloz">
                          </form>
-                         <form id="updateForm" class="hidden" action="update_logic.php" method="POST">
-                              <input type="text" name="title" id="">
-                              <input type="text" name="text" id="">
-                              <input type="text" name="image_url" id="">
+                         <form id="updateForm" class="hidden" action="update_logic.php" method="POST" onsubmit="checkChanges(event)"> 
+                              <input type="text" name="title" id="title">
+                              <input type="text" name="text" id="text">
+                              <input type="text" name="image_url" id="image_url">
                               <input hidden type="text" name="id">
+                              <select name="category" class="" id="category">
+                                   <?php foreach ($categories as $category) : ?>
+                                        <option value="<?= $category['id'] ?>"><?= $category['category_name'] ?></option>
+                                   <?php endforeach; ?>
+                              </select>
                               <input type="submit" name="submitt" value="Vloz">
                          </form>
                     </div>
                     <?php foreach ($articles as $article) : ?>
+
+                         <?php $articleCategory = $db->getArticleCategory($article['categories_id']);;
+                         $content = $db->getContentByArticleId($article['articles_content_id']); ?>
                          <div class="col-md-4 col-sm-6">
                               <!-- NEWS THUMB -->
                               <div class="news-thumb wow fadeInUp" data-wow-delay="0.8s">
@@ -92,7 +107,8 @@ http://www.tooplate.com/view/2098-health
                                    <div class="news-info">
                                         <span><?= $article['date']; ?></span>
                                         <h3><a href="news-detail.html"><?= $article['title']; ?></a></h3>
-                                        <p><?= $article['content']; ?></p>
+                                        <p><?= $content[0]['content'] ?></p>
+                                        <p><?= $articleCategory[0]['category_name'] ?></p>
                                         <div class="author">
                                              <img src="<?= $article['image_url']; ?>" class="img-responsive" alt="">
                                              <div class="author-info">

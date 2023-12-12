@@ -4,7 +4,7 @@ include_once "DB.php";
 
 use PO\Lib\DB;
 
-$db = new DB("localhost", 3306, "root", "", "phpschema");
+$db = new DB("localhost", 3306, "root", "", "phpschemafinal");
 
 if(isset($_POST['register'])) {
     $insert = $db->register($_POST['username'], $_POST['password']);

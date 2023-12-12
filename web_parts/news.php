@@ -6,7 +6,7 @@
 
      use PO\Lib\DB;
 
-     $db = new DB("localhost", 3306, "root", "", "phpschema");
+     $db = new DB("localhost", 3306, "root", "", "phpschemafinal");
      $articles = $db->getArticles();
      ?>
      <section id="news" data-stellar-background-ratio="2.5">
@@ -32,7 +32,7 @@
                                    <div class="news-info">
                                         <span><?= $article['date']; ?></span>
                                         <h3><?= $article['title']; ?></h3>
-                                        <p><?= $article['text']; ?></p>
+                                        <p><?= $article['content']; ?></p>
                                         <div class="author">
                                              <img src="<?= $article['image_url']; ?>" class="img-responsive" alt="">
                                              <div class="author-info">
