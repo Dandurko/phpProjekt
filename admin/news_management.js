@@ -130,3 +130,20 @@ function checkChanges(event) {
         updateArticle(globalArticleId, newTitle, newImage_url);
     }
 }
+
+function sendEmail() {
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "script.php", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    // Poslanie údajov na backend
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // Spracovanie odpovede z backendu (ak je potrebné)
+        }
+    };
+
+    var data = "email=" + encodeURIComponent("denoscicoo@gmail.com") + "&message=" + encodeURIComponent("message");
+    xhr.send(data);
+}

@@ -31,7 +31,6 @@
                                        <p><i class="fa fa-envelope-o"></i> <a href="#">general@company.com</a></p>
                                   </div>
                                   <ul class="social-icon">
-                                       <li><a href="#" class="fa fa-linkedin-square"></a></li>
                                        <li><a href="#" class="fa fa-envelope-o"></a></li>
                                   </ul>
                              </div>
