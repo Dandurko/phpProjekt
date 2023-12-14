@@ -12,7 +12,7 @@ $menoArray = explode(' ', $_POST['name']);
 $firstName = isset($menoArray[0]) ? $menoArray[0] : '';
 $lastName = isset($menoArray[1]) ? $menoArray[1] : '';
 
-// Ostatné hodnoty vložíme do samostatných premenných
+
 $email = isset($_POST['email']) ? $_POST['email'] : '';
 $department = isset($_POST['department']) ? $_POST['department'] : '';
 $message = isset($_POST['message']) ? $_POST['message'] : '';

@@ -23,13 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 function loadArticleData(articleId) {
-    // Implementujte AJAX volanie na server, aby ste získali informácie o článku
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'get_article_data.php?id=' + articleId, true);
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            // Spracovanie vrátených údajov a aktualizácia formulára
             let articleData = JSON.parse(xhr.responseText);
             updateForm(articleData[0]);
         }
@@ -40,9 +38,8 @@ function loadArticleData(articleId) {
 
 
 function updateContent(content, contentId) {
-    // Implement AJAX call to the server to update the category
     let xhr = new XMLHttpRequest();
-    let url = 'update_logic.php?content=true';  // Note: You might need to adjust this URL based on your application structure
+    let url = 'update_logic.php?content=true'; 
     let data = '&content=' + encodeURIComponent(content) +
         '&contentId=' + encodeURIComponent(contentId);
 
@@ -50,7 +47,6 @@ function updateContent(content, contentId) {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            // Handle the response from the server
             console.log(xhr.responseText);
             location.reload();
 
@@ -61,9 +57,8 @@ function updateContent(content, contentId) {
 }
 
 function updateCategory(articleId, category) {
-    // Implement AJAX call to the server to update the category
     let xhr = new XMLHttpRequest();
-    let url = 'update_logic.php?category=true';  // Note: You might need to adjust this URL based on your application structure
+    let url = 'update_logic.php?category=true'; 
     let data = '&category=' + encodeURIComponent(category) +
         '&articleId=' + encodeURIComponent(articleId);
 
@@ -83,14 +78,28 @@ function updateCategory(articleId, category) {
 
 
 function updateArticle(articleId, title, image_url) {
-    // Implementujte AJAX volanie na server, aby ste získali informácie o článku
+
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', 'update_logic.php?article=true', true);
+    let url = 'update_logic.php?article=true';  
     let data = '&title=' + encodeURIComponent(title) +
         '&image_url=' + encodeURIComponent(image_url) +
         '&articleId=' + encodeURIComponent(articleId);
-    xhr.send(data);
+
+    xhr.open('GET', url + data, true);
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            //dorobit assynchrony update
+            console.log(xhr.responseText);
+            location.reload();
+
+        }
+    };
+
+    xhr.send();
 }
+
+
 function updateForm(articleData) {
     let updateForm = document.getElementById('updateForm');
     updateForm.classList.toggle("hidden")
@@ -137,10 +146,9 @@ function sendEmail() {
     xhr.open("POST", "script.php", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-    // Poslanie údajov na backend
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            // Spracovanie odpovede z backendu (ak je potrebné)
+         
         }
     };
 

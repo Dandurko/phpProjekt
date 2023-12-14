@@ -16,7 +16,6 @@ session_start();
 <body>
 <div id="message-container">
         <?php
-        // Skontrolujte, či je v URL parameter status
         if (isset($_GET['status']) && $_GET['status'] == 0) {
             echo '<p id="error-message">The name is already taken. Please choose another.</p>';
         }

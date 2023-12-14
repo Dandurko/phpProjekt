@@ -48,7 +48,6 @@ class DB
                 $this->username,
                 $this->password
             );
-            // set the PDO error mode to exception
             $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
@@ -138,7 +137,7 @@ class DB
 
     public function logIn(string $username, string $password): ?int
     {
-        // Získanie uloženého hashovaného hesla z databázy
+
         $sql = "SELECT id, password FROM users WHERE username = :username";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':username', $username, \PDO::PARAM_STR);
@@ -147,27 +146,25 @@ class DB
         $userData = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if ($userData) {
-            // Overenie hesla pomocou password_verify
+
             if (password_verify($password, $userData['password'])) {
                 return $userData['id'];
             }
         }
 
-        return null; // V prípade neúspešného prihlásenia
+        return null; 
     }
 
     public function insertArticle(string $title, string $content, string $image_url, string $category, int $userId): bool
     {
-        // Vložení textu článku do tabulky articles_content
+
         $sqlContent = "INSERT INTO articles_content (content) VALUES (:content)";
         $stmtContent = $this->connection->prepare($sqlContent);
         $stmtContent->bindParam(':content', $content, \PDO::PARAM_STR);
         $stmtContent->execute();
 
-        // Získání ID vloženého obsahu
         $contentId = $this->connection->lastInsertId();
 
-        // Vložení článku do tabulky articles s odkazem na articles_content_id
         $sqlArticle = "INSERT INTO articles (title, image_url, date, users_id, articles_content_id,categories_id) VALUES (:title, :image_url, NOW(), :userId, :contentId,:category)";
         $stmtArticle = $this->connection->prepare($sqlArticle);
         $stmtArticle->bindParam(':title', $title, \PDO::PARAM_STR);
@@ -178,7 +175,7 @@ class DB
         $stmtArticle->execute();
 
 
-        return true;  // Nebo můžete vrátit něco jiného podle potřeby
+        return true; 
     }
 
 
@@ -220,17 +217,6 @@ class DB
         return $data;
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public function updateArticle(string $title, string $image_url, int $articleId): bool
     {
         $sql = "UPDATE articles 
@@ -246,18 +232,17 @@ class DB
 
     public function updateContent(string $content, string $contentId): bool
     {
-        // Use a prepared statement to prevent SQL injection
+
         $sql = "UPDATE articles_content 
            SET content = :content
            WHERE id = :contentId";
 
         $stmt = $this->connection->prepare($sql);
 
-        // Bind parameters
+  
         $stmt->bindParam(':content', $content, \PDO::PARAM_STR);
         $stmt->bindParam(':contentId', $contentId, \PDO::PARAM_INT);
 
-        // Execute the statement
         return $stmt->execute();
     }
 
@@ -266,7 +251,7 @@ class DB
 
     public function getDoctors(): array
     {
-        $sql = "SELECT doctors.first_name, doctors.second_name, doctors.phone_number, departments.name FROM `doctors` INNER JOIN departments ON departments.id = doctors.departments_id;";
+        $sql = "SELECT doctors.id, doctors.first_name, doctors.second_name, doctors.phone_number, departments.name FROM `doctors` INNER JOIN departments ON departments.id = doctors.departments_id;";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -277,18 +262,17 @@ class DB
 
     public function updateCategory(string $articleId, string $category): bool
     {
-        // Use a prepared statement to prevent SQL injection
+
         $sql = "UPDATE articles 
                 SET categories_id = :category
                 WHERE id = :articleId";
 
         $stmt = $this->connection->prepare($sql);
 
-        // Bind parameters
+
         $stmt->bindParam(':category', $category, \PDO::PARAM_STR);
         $stmt->bindParam(':articleId', $articleId, \PDO::PARAM_INT);
 
-        // Execute the statement
         return $stmt->execute();
     }
 
@@ -313,17 +297,10 @@ class DB
     }
 
 
-
-
-
-
-
-
-
     public function register(string $username, string $password): bool
     {
         $options = [
-            'cost' => 12, // Nastavenie náročnosti hashovania, môžete prispôsobiť podľa potreby
+            'cost' => 12, 
         ];
 
         $existingUser = $this->getUserByUsername($username);

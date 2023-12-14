@@ -46,7 +46,7 @@ http://www.tooplate.com/view/2098-health
      use PO\Lib\DB;
 
      $db = new DB("localhost", 3306, "root", "", "phpschemafinal");
-     $articles = $db->getArticleById($_GET['id']);
+     $articles = $db->getArticleWithContentById($_GET['id']);
      $recentArticles = $db->getLastTwoArticles($_GET['id']);
      ?>
      <section id="news-detail" data-stellar-background-ratio="0.5" style="background-position: 0px 471.5px;">
@@ -62,7 +62,7 @@ http://www.tooplate.com/view/2098-health
 
                                    </div>
                                    <h3><?= $article['title']; ?></h3>
-                                   <p><?= $article['text']; ?></p>
+                                   <p><?= $article['content']; ?></p>
 
 
 
