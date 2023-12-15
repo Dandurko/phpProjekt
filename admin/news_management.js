@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 function loadArticleData(articleId) {
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open('GET', 'get_article_data.php?id=' + articleId, true);
 
     xhr.onreadystatechange = function () {
@@ -107,8 +107,8 @@ function updateForm(articleData) {
     document.getElementById('updateForm').elements['text'].value = articleData.content;
     document.getElementById('updateForm').elements['image_url'].value = articleData.image_url;
     document.getElementById('updateForm').elements['id'].value = articleData.id;
-    var categoryDropdown = document.getElementById('updateForm').elements['category'];
-    for (var i = 0; i < categoryDropdown.options.length; i++) {
+    let categoryDropdown = document.getElementById('updateForm').elements['category'];
+    for (let i = 0; i < categoryDropdown.options.length; i++) {
         if (categoryDropdown.options[i].value == articleData.categories_id) {
             categoryDropdown.options[i].selected = true;
             break;
@@ -142,7 +142,7 @@ function checkChanges(event) {
 
 function sendEmail() {
 
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.open("POST", "script.php", true);
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
@@ -152,6 +152,6 @@ function sendEmail() {
         }
     };
 
-    var data = "email=" + encodeURIComponent("denoscicoo@gmail.com") + "&message=" + encodeURIComponent("message");
+    let data = "email=" + encodeURIComponent("denoscicoo@gmail.com") + "&message=" + encodeURIComponent("message");
     xhr.send(data);
 }

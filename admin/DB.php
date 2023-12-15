@@ -56,7 +56,7 @@ class DB
 
     public function getArticles(): array
     {
-        $sql = "SELECT articles.id, articles.title, articles.image_url, articles.date, articles.users_id, articles.articles_content_id, articles.categories_id, articles_content.content, categories.category_name FROM articles INNER JOIN articles_content ON articles.articles_content_id = articles_content.id INNER JOIN categories ON articles.categories_id = categories.id";
+        $sql = "SELECT articles.id, articles.title, articles.image_url, articles.date, articles.users_id, articles.articles_content_id, articles.categories_id, articles_content.content, categories.category_name,users.username FROM articles INNER JOIN articles_content ON articles.articles_content_id = articles_content.id INNER JOIN categories ON articles.categories_id = categories.id INNER JOIN users ON articles.users_id = users.id";
         $query = $this->connection->query($sql);
         $data = $query->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -94,6 +94,16 @@ class DB
         $sql = "SELECT * FROM articles WHERE users_id = :userId";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':userId', $userId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $data;
+    }
+    public function getArticlesByCategory(int $categoryId): array
+    {
+        $sql = "SELECT articles.id, articles.title, articles.image_url, articles.date, articles.users_id, articles.articles_content_id, articles.categories_id, articles_content.content, categories.category_name,users.username FROM articles INNER JOIN articles_content ON articles.articles_content_id = articles_content.id INNER JOIN categories ON articles.categories_id = categories.id INNER JOIN users ON articles.users_id = users.id WHERE categories_id = :categoryId";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':categoryId', $categoryId, \PDO::PARAM_INT);
         $stmt->execute();
         $data = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 

@@ -79,6 +79,9 @@ include 'web_parts/team.php';
 include 'web_parts/news.php';
 include 'web_parts/appointment.php';
 include 'web_parts/footer.html';
+
+
+
 ?>
 
      <!-- SCRIPTS -->

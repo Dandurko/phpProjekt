@@ -35,7 +35,7 @@ session_start();
         
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var errorMessage = document.getElementById('error-message');
+            let errorMessage = document.getElementById('error-message');
 
             if (errorMessage) {
                 setTimeout(function() {

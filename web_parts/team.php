@@ -51,9 +51,9 @@ $doctors = $db->getDoctors();
     <!-- JavaScript na otvorenie a zatvorenie modálneho okna pre každého lekára -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            var openModalBtn = document.querySelector("[data-doctor-id='<?= $doctor['id']; ?>']");
-            var closeModalBtn = document.getElementById("closeModalBtn<?= $doctor['id']; ?>");
-            var modal = document.getElementById("myModal<?= $doctor['id']; ?>");
+            let openModalBtn = document.querySelector("[data-doctor-id='<?= $doctor['id']; ?>']");
+            let closeModalBtn = document.getElementById("closeModalBtn<?= $doctor['id']; ?>");
+            let modal = document.getElementById("myModal<?= $doctor['id']; ?>");
 
             openModalBtn.addEventListener("click", function () {
                 modal.style.display = 'block';
