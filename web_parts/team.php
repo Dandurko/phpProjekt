@@ -6,7 +6,7 @@ use PO\Lib\DB;
 
 $db = new DB("localhost", 3306, "root", "", "phpschemafinal");
 $doctors = $db->getDoctors();
-
+$i=0;
 ?>
 <section id="team" data-stellar-background-ratio="1">
      <div class="container">
@@ -20,9 +20,10 @@ $doctors = $db->getDoctors();
 
                <div class="clearfix"></div>
                <?php foreach ($doctors as $doctor) : ?>
+                <?php $i++;?>
     <div class="col-md-4 col-sm-6">
         <div class="team-thumb wow fadeInUp" data-wow-delay="0.2s">
-            <img src="images/team-image1.jpg" class="img-responsive" alt="">
+        <img src="images/team-image<?php echo $i; ?>.jpg" class="img-responsive" alt="">
             <div class="team-info">
                 <h3><?= $doctor['first_name']; ?> <?= $doctor['second_name']; ?></h3>
                 <p><?= $doctor['name']; ?></p>
@@ -37,7 +38,6 @@ $doctors = $db->getDoctors();
         </div>
     </div>
 
-    <!-- Modálne okno pre každého lekára -->
     <div id="myModal<?= $doctor['id']; ?>" class="modal">
         <div class="modal-content">
             <span class="close" id="closeModalBtn<?= $doctor['id']; ?>">&times;</span>
@@ -48,7 +48,6 @@ $doctors = $db->getDoctors();
         </div>
     </div>
 
-    <!-- JavaScript na otvorenie a zatvorenie modálneho okna pre každého lekára -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let openModalBtn = document.querySelector("[data-doctor-id='<?= $doctor['id']; ?>']");

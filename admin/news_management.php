@@ -71,7 +71,7 @@ http://www.tooplate.com/view/2098-health
                     <div>
                          <form id="insertForm" class="hidden" action="insert_logic.php" method="POST">
                               <input type="text" name="title" id="">
-                              <input type="text" name="text" id="">
+                              <input type="textarea" name="text" id="">
                               <input type="text" name="image_url" id="">
                               <select name="category" class="">
                                    <?php foreach ($categories as $category) : ?>
@@ -101,12 +101,12 @@ http://www.tooplate.com/view/2098-health
                          <div class="col-md-4 col-sm-6">
                               <!-- NEWS THUMB -->
                               <div class="news-thumb wow fadeInUp" data-wow-delay="0.8s">
-                                   <a href="news-detail.html">
+                                   <a href="news-detail.php">
                                         <img src="<?= $article['image_url']; ?>" class="img-responsive" alt="">
                                    </a>
                                    <div class="news-info">
                                         <span><?= $article['date']; ?></span>
-                                        <h3><a href="news-detail.html"><?= $article['title']; ?></a></h3>
+                                        <h3><a href="news-detail.php"><?= $article['title']; ?></a></h3>
                                         <p><?= $content[0]['content'] ?></p>
                                         <p><?= $articleCategory[0]['category_name'] ?></p>
                                         <div class="author">

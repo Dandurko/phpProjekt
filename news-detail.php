@@ -79,7 +79,7 @@ http://www.tooplate.com/view/2098-health
                               <div class="news-sidebar">
                                    <div class="news-author">
                                         <h4>About the author</h4>
-                                        <h5><?= $article['users_id']; ?></h5>
+                                        <h5><?= $article['username']; ?></h5>
 
                                    </div>
 

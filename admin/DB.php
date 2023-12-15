@@ -124,7 +124,7 @@ class DB
 
     public function getArticleWithContentById(int $id): array
     {
-        $sql = "SELECT articles.id, articles.title, articles.image_url, articles.date, articles.users_id, articles.articles_content_id, articles.categories_id, articles_content.content, categories.category_name FROM articles INNER JOIN articles_content ON articles.articles_content_id = articles_content.id INNER JOIN categories ON articles.categories_id = categories.id WHERE articles.id = :id";
+        $sql = "SELECT articles.id, articles.title, articles.image_url, articles.date, articles.users_id, articles.articles_content_id, articles.categories_id, articles_content.content, categories.category_name,users.username FROM articles INNER JOIN articles_content ON articles.articles_content_id = articles_content.id INNER JOIN users ON articles.users_id = users.id INNER JOIN categories ON articles.categories_id = categories.id WHERE articles.id = :id";
 
 
         $stmt = $this->connection->prepare($sql);
